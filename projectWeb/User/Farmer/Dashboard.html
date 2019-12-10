@@ -92,16 +92,6 @@
                         </thead>
                         <tbody class="farmsList">
                           
-                            <tr>
-                                <td>F1234</td>
-                                <td>Orscheln Farm &amp; Home</td>
-                                <td>1702 W 11th St, Coffeyville, KS 67337</td>
-                            </tr>
-                            <tr>
-                                <td>F5678</td>
-                                <td>Lavender Farms</td>
-                                <td>11077 Ness Rd, Altamont, KS 67330</td>
-                            </tr>
                             
                         </tbody>  
                         
@@ -143,7 +133,8 @@
                 });
                 $(".farmsList tr").click(function(link){
                     console.log(link.target.parentElement.getAttribute('data-id'));
-                    window.location = "../../Farms/view.html#farmId="+link.target.parentElement.getAttribute('data-id');
+                    localStorage.setItem('farmId',link.target.parentElement.getAttribute('data-id'));
+                    window.location = "../../Farms/view.html";
                 });
             }
 

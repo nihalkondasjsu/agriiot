@@ -22,17 +22,12 @@
                                             text-align: center;
                                             display: block;
                                         ">Bill Creation</h2>
-                      <form action="#" method="POST" onsubmit="event.preventDefault(); validateMyForm();">
-                            <input name="email" 
-                                    placeholder="One-Time Installation fee"><br>
-                            <input name="password"
+                      <form id='myForm' action="#" method="POST" onsubmit="event.preventDefault(); validateMyForm();">
+                            <input name="charge" 
+                                    placeholder="Charge"><br>
+                            <input name="payAsYouGo"
                                     placeholder="Pay-as-you-go"><br><br>
-                            <input name="startDate"
-                                   type="date"><br><br>
-                            <input name="endDate"
-                                   type="date"><br><br>
                             <button name="submit" value="yes" id="submit_button">Create Bill and Contract</button><br><br>
-
                         </form>
                   </div>
                </td>
@@ -42,9 +37,21 @@
        <script src="../js/all.js"></script>
         <script>
             $("#submit_button").click(function(link){
-                window.parent.postMessage("close",'*');
-                window.close();
+                submitForm();
             });
+
+            function submitForm(){
+               var bill = getFormData($("#myForm"));
+               bill['requestId'] = localStorage.getItem('srId');
+               bill['serviceTax'] = parseInt(bill['charge']) *0.09;
+                $.post("/bill/create",bill,function(data){
+                    if(data.success){
+                        window.close();
+                    }else{
+                        alert("Please try again.");
+                    }
+                });
+            }
         </script>
    </body>
 </html>

@@ -5,7 +5,7 @@ module.exports = function(callback){
     var collections = {}
 
     client.connect(err => {
-        const collectionNames = ["users","service_requests","contracts","billing","payment","farms","things"];
+        const collectionNames = ["users","service_requests","contracts","bills","farms","things"];
         collectionNames.forEach((collNam) => (collections[collNam] = client.db("agriiot").collection(collNam)));
         callback(collections);
         //client.close();

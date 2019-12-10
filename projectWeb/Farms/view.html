@@ -141,8 +141,6 @@
                             </td>
                         </tr>
                       </table>
-                          
-                      <h2>Orscheln Farm &amp; Home</h2>
                         
                     <table class="farmList" style="width:100%"
                            cellpadding="0"
@@ -183,55 +181,49 @@
           
           var data={
               "sensors":[
-                { 
-                    "thingId":"T5677",
-                    "thingName":"North Barn Temperature Sensor",
-                    "thingSubType":"Temperature"
-                },
-                { 
-                    "thingId":"T5678",
-                    "thingName":"South Field pH Sensor",
-                    "thingSubType":"pH"
-                }  
+                
               ],
               "actuators":[
-                { 
-                    "thingId":"T5578",
-                    "thingName":"South Field Water Dispenser",
-                    "thingSubType":"Water Dispenser"
-                },
-                { 
-                    "thingId":"T5579",
-                    "thingName":"North Barn Temperature Control",
-                    "thingSubType":"Temperature Control"
-                },
-                { 
-                    "thingId":"T5580",
-                    "thingName":"South Field Fretilizer Dispenser",
-                    "thingSubType":"Fretilizer Dispenser"
-                } 
+                
               ]
           };
           
-          var sr = localStorage.getItem("sr") || 0;
-          
-          if(sr == 3){
-                 data["sensors"][2] ={ 
-                        "thingId":"T5679",
-                        "thingName":"South Barn Temperature Sensor",
-                        "thingSubType":"Temperature"
-                    };
-                
-                data["sensors"][3] = { 
-                    "thingId":"T5680",
-                    "thingName":"South Field Soil Moisture",
-                    "thingSubType":"Soil Moisture"
-                };
-            }
-          
-            $.get('/thing/list?farmId='+GetURLParameter('farmId'),function(data){
-                console.log(data);
+            var farm;
+
+            var farmId = localStorage.getItem('farmId');
+            $.get('/farm/read?farmId='+farmId,function(data2){
+                if(data2.success){
+                    farm = data2.data;
+                    loadFarmDetails();
+                }else{
+                    return;
+                }
+                $.get('/thing/list?farmId='+farmId,function(data1){
+                    console.log(data1);
+
+                    var thinglist = data1.thinglist;
+
+                    thinglist.forEach(function(thing){
+                        console.log(data);
+                        console.log(thing);
+                        console.log(thing.thingType.thingMainType.toLowerCase()+"s");
+                        data[thing.thingType.thingMainType.toLowerCase()+"s"].push(
+                            {
+                                thingId:thing.thingId,
+                                thingName:thing.thingName,
+                                thingSubType:thing.thingType.thingSubType
+                            }
+                        );
+                    });
+
+                    showThingType("sensors");
+                });
             });
+
+
+            function loadFarmDetails(){
+                $('h2').html(farm.farmName);
+            }
 
           function showThingType(thingType){
               thingType = thingType.toLowerCase();
@@ -241,7 +233,7 @@
               var things = data[thingType];
               
               for(var i=0;i<things.length;i++){
-                html += "<tr onclick='thingClicked(this)'>";
+                html += "<tr onclick='thingClicked(this)' data-id='"+things[i]["thingId"]+"'>";
                 html += "<td>";
                 html += things[i]["thingId"];  
                 html += "</td>";
@@ -257,7 +249,7 @@
               $("#thingsList").html(html);
           }
           
-          showThingType("sensors");
+          
           
           $(".tab").click(function(link){
               $(".selected").removeClass("selected");
@@ -267,6 +259,7 @@
           });
           function thingClicked(thing){
               console.log($(".selected").html().trim());
+              localStorage.setItem('thingId',thing.getAttribute('data-id'));
               if($(".selected").html().trim() == "Sensors"){
                   window.location = "../Thing/sensor.html";
               }else
@@ -282,6 +275,7 @@
 //        ));
           
           function showStubs(){
+              
               popitup('../Farms/stubs.html','Farm Thing Stubs');
             }
 
@@ -297,33 +291,8 @@
               return false;
             }
           
-          
-          var user = localStorage.getItem("user") || "none";
-          
-          var sr = localStorage.getItem("sr") || -1;
-          
-          if(user != "f"){
-              $(".farmerOnly").hide();
-          }
-          
-          if(
-              (user == "f" && (sr == 1 || sr == 3))
-                ||
-              (user =="mc" && (sr == 2))
-                ||
-              (user =="scs" && (sr == 0))
-            ){
-             $("#notif").css('opacity','1.0');
-            }else{
-                $("#notif").css('opacity','0.0');
-            }
-          
-          function addSR(){
-              window.location = "../ServiceRequest/create.html";
-          }
-          
           function showSR(){
-              window.location = "../ServiceRequest/read.html";
+              window.location = "../ServiceRequest/list.html";
           }
         </script>
    </body>

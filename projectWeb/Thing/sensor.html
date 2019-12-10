@@ -116,24 +116,26 @@
                   <div class="formDiv">
                       <h1 class="heading">Sensor Information</h1>
                       <div style="background-color: rgba(255,255,255,0.4);">
-                      <h2>North Barn Temperature Sensor</h2>
+                      <h2 id='tnm'>North Barn Temperature Sensor</h2>
                         <table style="text-align: left">
                             <tr>
                                 <th>Thing ID</th>
-                                <td>T5677</td>
+                                <td id='tid'>T5677</td>
                             </tr>
                             <tr>
                                 <th>Thing SubType</th>
-                                <td>Temperature Sensor</td>
+                                <td id='tsbty'>Temperature Sensor</td>
                             </tr>
                             <tr>
                                 <th>Thing Status</th>
-                                <td>Active</td>
+                                <td id='tst'>Active</td>
                             </tr>
+                            <!--
                             <tr>
                                 <th>Thing Location</th>
                                 <td><a href="#">Click Here To View Installed Location</a></td>
-                            </tr>  
+                            </tr>
+                            -->  
                         </table>
                         
                     <table class="thingData" style="width:100%"
@@ -176,19 +178,27 @@
       </table>
        <script src="../js/all.js"></script>
        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-      <script>
-          var thingId = "T5679";
-          var prevValue = 30+randomValue(10);
+      <script src="../../socket.io/socket.io.js"></script>
+        <script>
+          var thingId = localStorage.getItem('thingId');
+
+            var thing ;
+            $.get('/thing/read?thingId='+thingId,function(data){
+                if(data.success){
+                    thing = data.data;
+                    $('#tnm').html(thing.thingName);
+                    $('#tid').html(thing.thingId);
+                    $('#tsbty').html(thing.thingType.thingSubType);
+                    $('#tst').html(thing.thingStatus);
+                    loadSocketData();
+                }
+            });
+
           var prevData = [];
           var chart = undefined;
           
-          setInterval(function(){
-            var json = {
-                "thingId":thingId,
-                "timestamp":new Date().getTime(),
-                "value":(   cToF(prevValue + (randomValue(10) - 5)))
-            };
-              json.x = json["timestamp"];
+        function presentData(json){
+            json.x = json["timestamp"];
               json.y = json["value"];
               json.label = new Date(json.x).toTimeString().split(' ')[0];
               
@@ -203,8 +213,8 @@
             }else{
                  prependData(json);
             }
-          },1000);
-          
+        }
+
             function randomValue(n){
                 return (Math.random()*100000)%n;
             }  
@@ -267,6 +277,20 @@
                 return cToFahr;
             }
           
+            function loadSocketData(){
+                var socket = io();
+                socket.on(thing.DEVICE_ID, function(msg){
+                    console.log(msg);
+                    presentData(
+                        {
+                            "thingId":thingId,
+                            "timestamp":new Date().getTime(),
+                            "value":(msg["temperature"])
+                        }
+                    );
+                });
+            }
+
         </script>
    </body>
 </html>

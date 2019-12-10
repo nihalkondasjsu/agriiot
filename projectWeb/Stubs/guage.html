@@ -116,7 +116,7 @@
             var thingMax = GetURLParameter('thingMax') || 100;
             thingMax = parseInt(thingMax);
             
-            $("h1").html("Thing "+thingId);
+            $("h1").html(decodeURI(GetURLParameter('thingName')));
             
             $("#PreviewGaugeMeter").attr("data-append",thingAppend);
             $("#PreviewGaugeMeter").attr("data-label",thingLabel);
@@ -125,11 +125,7 @@
             $(".GaugeMeter").gaugeMeter();
             
             console.log(thingId);
-            if(thingId == "T5677"){
-                loadSocketData();
-            }else{
-                loadRandomData();
-            }
+            loadSocketData();
             
             var prevVal = thingMin;
             var prevTs = new Date().getTime();
@@ -171,7 +167,7 @@
             
             function loadSocketData(){
                 var socket = io();
-                socket.on('some event', function(msg){
+                socket.on(GetURLParameter('thingDeviceId'), function(msg){
                     console.log(msg);
                     presentData(msg["temperature"]);
                 });

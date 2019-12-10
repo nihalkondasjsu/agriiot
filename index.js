@@ -20,6 +20,15 @@ require('./db/mongodb')(function(colls){
     require('./routes/user/logout')(app,collections);
     require('./routes/farm/create')(app,collections);
     require('./routes/farm/list')(app,collections);
+    require('./routes/farm/read')(app,collections);
+    require('./routes/servicerequest/create')(app,collections);
+    require('./routes/servicerequest/list')(app,collections);
+    require('./routes/servicerequest/read')(app,collections);
+    require('./routes/bill/create')(app,collections);
+    require('./routes/bill/pay')(app,collections);
+    require('./routes/thing/list')(app,collections);
+    require('./routes/thing/create')(app,collections);
+    require('./routes/thing/read')(app,collections);
 });
 
 
@@ -79,7 +88,7 @@ http.listen(3000, function() {
     
     appClient.on("connect", function () {
  
-        appClient.subscribeToDeviceEvents("Generic","314159","+","json");
+        appClient.subscribeToDeviceEvents("Generic","+","+","json");
 
             console.log("appClientConnected Successfully");
 
@@ -89,7 +98,7 @@ http.listen(3000, function() {
         console.log("Device Event from :: "+deviceType+" : "+deviceId+" of event "+eventType+" with payload : "+payload);
 
             console.log("appClientConnected deviceEvent");
-            io.emit('some event', JSON.parse(payload)); // This will emit the event to all connected sockets
+            io.emit(deviceId, JSON.parse(payload)); // This will emit the event to all connected sockets
 
     });
     

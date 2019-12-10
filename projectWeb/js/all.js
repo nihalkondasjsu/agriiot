@@ -27,6 +27,7 @@ bindEvent(window, 'message', function (e) {
 
 function GetURLParameter(sParam)
 {
+    console.log(window.location);
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
     for (var i = 0; i < sURLVariables.length; i++) 

@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
       <style>
          body{background-image:url(https://cdn-img.health.com/sites/default/files/styles/medium_16_9/public/1516658245/agriculture-lungs-gettyImages-543212762.jpg?itok=S5rZATig&1516658555);background-size:cover;background-position:center;}
-         
+          
           .dp{
               width: 200px;
               height:200px;
@@ -34,6 +34,7 @@
           
           .farmList td,th{
               padding:10px;
+              max-width:200px;
           }
           
           .farmList tbody tr:hover{
@@ -64,36 +65,28 @@
                <td align="center" valign="middle">
                   <div class="formDiv">
                       <h1 class="heading">Welcome to AgriIot</h1>
-                        <img class="dp" src="http://nihalkonda.com/281/Screen%20Shot%202019-11-18%20at%205.20.06%20PM.png">
+                        <img class="dp" src="https://ukla.org/images/icons/user-icon.svg">
                       <br>
                       <br>
                       <div style="background-color: rgba(255,255,255,0.4);">
-                      <h2>Here are the farms you have worked on</h2>
+                      
+                      <table style='width:100%;padding:15px;'>
+                        <tr valign='middle'>
+                            <td ><h2>Here are your Service Requests</h2></td>
+                            
+                        </tr>
+                      </table>
                       <table class="farmList">
                         <thead>
                             <tr>
                                 <th>Farm Id</th>
-                                <th>Farm Name</th>
-                                <th>Farm Address</th>
+                                <th>SR Id</th>
+                                <th>SR Type</th>
+                                <th>SR State</th>
                             </tr>  
                         </thead>
                         <tbody class="farmsList">
                           
-                            <tr>
-                                <td>F1234</td>
-                                <td>Orscheln Farm &amp; Home</td>
-                                <td>1702 W 11th St, Coffeyville, KS 67337</td>
-                            </tr>
-                            <tr>
-                                <td>F5678</td>
-                                <td>Lavender Farms</td>
-                                <td>11077 Ness Rd, Altamont, KS 67330</td>
-                            </tr>
-                            <tr>
-                                <td>F9123</td>
-                                <td>Hedge Hollow Nubians</td>
-                                <td>28 SH, Nowata, OK 74048</td>
-                            </tr>
                             
                         </tbody>  
                         
@@ -106,12 +99,39 @@
       </table>
        <script src="../../js/all.js"></script>
       <script>
+      console.log('whoami calling');
+      /*
       $.get("/whoami",function(data){
+            console.log(data);
+            if(data.user === true){
+                
+                sendMsgToParent({userState:'changed','data':data});
+                
+                $.get("/farm/list",function(data){
+                    console.log(data);
+                    loadFarms(data);
+                });
+
+            }else{
+                alert("Login First");
+                window.location = "../../Login/index.html";
+
+            }
+        }).fail(function(err) {
+            console.log(err);
+        });
+        */
+          
+            function addSR(){
+                    window.location = "create.html";
+            }
+
+            $.get("/whoami",function(data){
         console.log(data);
             if(data.user === true){
                 
                 sendMsgToParent({userState:'changed','data':data});
-                $.get("/farm/list",function(data){
+                $.get("/servicerequest/list",function(data){
                     console.log(data);
                     loadFarms(data);
                 });
@@ -121,16 +141,20 @@
 
             }
         });
-          $(".farmsList tr").click(function(link){
-              window.location = "../../Farms/index.html";
-          });
+        
+
           function loadFarms(data){
-                data.farmList.each(function(farm){
-                    $(".farmsList").append("<tr><td>"+farm.farmId+"</td><td>"+farm.farmName+"</td><td>"+farm.farmAddress+"</td></tr>");
+                console.log(data);
+                data['servicerequestlist'].forEach(function(sr){
+                    $(".farmsList").append("<tr data-id='"+sr.requestId+"'><td>"+sr.farmId+"</td><td>"+sr.requestId+"</td><td>"+sr.requestType+"</td><td>"+sr.requestStatus+"</td></tr>");
+                });
+                $(".farmsList tr").click(function(link){
+                    console.log(link.target.parentElement.getAttribute('data-id'));
+                    localStorage.setItem("srId",link.target.parentElement.getAttribute('data-id'));
+                    window.location = "../../ServiceRequest/view.html";
                 });
             }
 
-        
         </script>
    </body>
 </html>

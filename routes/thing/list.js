@@ -3,30 +3,24 @@ module.exports = function(app,collections){
     app.get('/thing/list', function(req, res){
         console.log(req.body);
         
-        var servicerequestlist = []
+        var thinglist = []
 
         if(req.query.farmId){
-            collections["farms"].findOne({farmId:req.query.farmId},function(err,farm){
+            var cursor = collections["things"].find({thingFarmId:req.query.farmId});
+
+            cursor.each(function(err, item) {
                 if(err){
-                    res.json({servicerequestlist:servicerequestlist});
+                    res.json({thinglist:thinglist});
                     return;
                 }
-                var temp = collections['service_requests'].find({farmId:farm.farmId});
-                temp.each(function(err,sreq){
-                    if(err){
-                        res.json({servicerequestlist:servicerequestlist});
-                    }else{
-                        if(sreq)
-                        servicerequestlist.push(sreq);
-                        else
-                        res.json({servicerequestlist:servicerequestlist});
-                    }
-                        
-                });
-
+                if(item){
+                    thinglist.push(item);
+                }else{
+                    res.json({thinglist:thinglist});
+                }
             });
         }else{
-            res.json({servicerequestlist:servicerequestlist});
+            res.json({thinglist:thinglist});
         }
     });
     

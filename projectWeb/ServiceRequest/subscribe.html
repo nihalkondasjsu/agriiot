@@ -27,30 +27,29 @@
                                 margin: 0;
                                 text-align: center;
                                 display: block;
-                            ">Service Request Create</h2>
+                            ">Service Request Subscribe</h2>
                       <form id="myForm" action="#" method="POST" onsubmit="event.preventDefault(); validateMyForm();">
                             
                           <div id="formElements">
                             <div class="formEle">
-                                <select name="ThingType[]" >
+                                <select class="ThingType" >
                                     <optgroup label="Sensor">
-                                        <option value="ssm">Soil Moisture</option>
-                                        <option value="ssm">Temperature</option>
-                                        <option value="ssm">Fire Alert</option>
-                                        <option value="ssm">Sun Light</option>
-                                        <option value="ssm">pH Sensor</option>
-                                        <option value="ssm">Location</option>
+                                        <option value="s0">Soil Moisture</option>
+                                        <option value="s1">Temperature</option>
+                                        <option value="s2">Fire Alert</option>
+                                        <option value="s3">Sun Light</option>
+                                        <option value="s4">pH Sensor</option>
+                                        <option value="s5">Location</option>
                                     </optgroup>
                                     <optgroup label="Actuator">
-                                        <option value="ssm">Water Dispenser</option>
-                                        <option value="ssm">Temperature Control</option>
-                                        <option value="ssm">Water Dispenser</option>
-                                        <option value="ssm">Greenhouse roof</option>
-                                        <option value="ssm">Fertilizer Dispenser</option>
-                                        <option value="ssm">Drone Camera</option>
+                                        <option value="a0">Water Dispenser</option>
+                                        <option value="a1">Temperature Control</option>
+                                        <option value="a2">Greenhouse roof</option>
+                                        <option value="a3">Fertilizer Dispenser</option>
+                                        <option value="a4">Drone Camera</option>
                                     </optgroup>
                                 </select>
-                                <input name="ThingQuantity[]" placeholder="ThingQuantity" >
+                                <input class="ThingQuantity" placeholder="ThingQuantity" >
                             </div>
                           </div>
 
@@ -79,11 +78,50 @@
             $("#submit_button").click(function(link){
                 submitForm();
             });
+            
+            function getThingType(val){
+                if(val.startsWith('a'))
+                return "Actuator";
+                return "Sensor";
+            }
+
+            function getThingSubType(val){
+                var vals ;
+                if(val.startsWith('a')){
+                     vals = ['Water Dispenser','Temperature Control','Greenhouse roof','Fertilizer Dispenser','Drone Camera'];
+                }else{
+                     vals = ['Soil Moisture','Temperature','Fire Alert','Sun Light','pH Sensor','Location'];
+                }
+                return vals[parseInt(val.slice(-1))];
+            }
+
+            function getMyFormData(){
+                var ThingType = document.getElementsByClassName('ThingType');
+                var ThingQuantity = document.getElementsByClassName('ThingQuantity');
+                var res = [];
+                for(var i=0;i<ThingQuantity.length;i++){
+                    thingType = ThingType[i].value;
+                    thingQuantity = ThingQuantity[i].value;
+                    res.push(
+                        {   thingType:{
+                                thingMainType:getThingType(thingType),
+                                thingSubType:getThingSubType(thingType)
+                            },
+                            quantity:thingQuantity
+                        }
+                        );
+                }
+                console.log(JSON.stringify({requestDetails:{subscribe:res}}));
+                return JSON.parse(JSON.stringify({requestDetails:{subscribe:res}}));
+            }
+
             function submitForm(){
-                alert(JSON.stringify(getFormData($("#myForm"))));
-                $.post("/servicerequest/create/",getFormData($("#myForm")),function(data){
+                var res = getMyFormData();
+                res['farmId'] = localStorage.getItem('farmId');
+                console.log(res);
+                $.post("/servicerequest/create/subscribe",res,function(data){
                     if(data.success){
-                        window.location = "../User/Farmer/Dashboard.html";
+                        window.location = "list.html";
                     }else{
                         alert("Please try again.");
                     }

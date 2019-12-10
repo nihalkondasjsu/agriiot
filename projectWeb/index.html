@@ -48,7 +48,10 @@ background: url(http://www.sjsu.edu/sjsuhome/assets/images/bg-pattern-sjsu-02.pn
           //  return;
           //}
 
+            console.log(folder)
+
           if(folder.endsWith("Dashboard")){
+              console.log(folder+" ends with dashboard | "+userRole);
               if(userRole == 'farmer'){
                   $("#ifr").attr("src","/User/Farmer/Dashboard.html");
               }
@@ -73,7 +76,7 @@ background: url(http://www.sjsu.edu/sjsuhome/assets/images/bg-pattern-sjsu-02.pn
         console.log(data);
         try{
             if(data.user === true){
-                
+                userRole = data["userDetails"]["userRole"];
                 $(".menu a:eq(4)").html(data["userDetails"]["userName"]+"'s Dashboard");
                 $(".menu a:eq(5)").html("Logout");
                 
@@ -81,13 +84,21 @@ background: url(http://www.sjsu.edu/sjsuhome/assets/images/bg-pattern-sjsu-02.pn
                 
                 $(".menu a:eq(4)").html("Login");
                 $(".menu a:eq(5)").html("SignUp");
+                clearAll();
 
             }
         }catch(e){
                 $(".menu a:eq(4)").html("Login");
                 $(".menu a:eq(5)").html("SignUp");
+                clearAll();
         }
     };
+
+    function clearAll(){
+        var keys = Object.keys(localStorage);
+        console.log(keys);
+        keys.forEach((key) => (localStorage.removeItem(key)));
+    }
     
 </script>
     

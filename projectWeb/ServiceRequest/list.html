@@ -34,6 +34,7 @@
           
           .farmList td,th{
               padding:10px;
+    max-width: 200px;
           }
           
           .farmList tbody tr:hover{
@@ -50,7 +51,7 @@
             color: #E5A635;
             font-family: 'Cinzel', serif;
             font-size: 20pt;
-
+            margin:0;
           }
           
       </style>
@@ -68,42 +69,28 @@
                       <br>
                       <br>
                       <div style="background-color: rgba(255,255,255,0.4);">
-                      <h2>Here are your Farms</h2>
+                      
+                      <table style='width:100%;padding:15px;'>
+                        <tr valign='middle'>
+                            <td ><h2>Here are your Service Requests</h2></td>
+                            <td align='right'>
+                            <img src="https://images.vexels.com/media/users/3/139161/isolated/preview/c76ee72de9a5b980c5f0e0d6b7bac0e0-cross-plus-add-by-vexels.png" style="
+                                                                width: 35px;
+                                                                height: 35px;
+                                                                
+                                                                " class="farmerOnly" onclick="addSR()">
+                            </td>
+                        </tr>
+                      </table>
                       <table class="farmList">
                         <thead>
                             <tr>
                                 <th>Farm Id</th>
-                                <th>Farm Name</th>
-                                <th>Farm Address</th>
+                                <th>SR Id</th>
+                                <th>SR Type</th>
                             </tr>  
                         </thead>
                         <tbody class="farmsList">
-                          
-                            <tr>
-                                <td>F1234</td>
-                                <td>Orscheln Farm &amp; Home</td>
-                                <td>1702 W 11th St, Coffeyville, KS 67337</td>
-                            </tr>
-                            <tr>
-                                <td>F5678</td>
-                                <td>Lavender Farms</td>
-                                <td>11077 Ness Rd, Altamont, KS 67330</td>
-                            </tr>
-                            <tr>
-                                <td>F9123</td>
-                                <td>Hedge Hollow Nubians</td>
-                                <td>28 SH, Nowata, OK 74048</td>
-                            </tr>
-                            <tr>
-                                <td>F9123</td>
-                                <td>Hedge Hollow Nubians</td>
-                                <td>28 SH, Nowata, OK 74048</td>
-                            </tr>
-                            <tr>
-                                <td>F9123</td>
-                                <td>Hedge Hollow Nubians</td>
-                                <td>28 SH, Nowata, OK 74048</td>
-                            </tr>
                             
                         </tbody>  
                         
@@ -116,22 +103,53 @@
       </table>
        <script src="../../js/all.js"></script>
       <script>
+      console.log('whoami calling');
+      /*
       $.get("/whoami",function(data){
-        console.log(data);
+            console.log(data);
             if(data.user === true){
                 
                 sendMsgToParent({userState:'changed','data':data});
                 
+                $.get("/farm/list",function(data){
+                    console.log(data);
+                    loadFarms(data);
+                });
+
             }else{
-                
+                alert("Login First");
                 window.location = "../../Login/index.html";
 
             }
+        }).fail(function(err) {
+            console.log(err);
         });
-          $(".farmsList tr").click(function(link){
-              window.location = "../../Farms/index.html";
-          });
+        */
+          
         
+            var farmId = localStorage.getItem('farmId');
+
+            $.get("/servicerequest/list?farmId="+farmId,function(data){
+                console.log(data);
+                loadFarms(data);
+            });
+
+            function loadFarms(data){
+                console.log(data);
+                data['servicerequestlist'].forEach(function(sr){
+                    $(".farmsList").append("<tr data-id='"+sr.requestId+"'><td>"+sr.farmId+"</td><td>"+sr.requestId+"</td><td>"+sr.requestType+"</td></tr>");
+                });
+                $(".farmsList tr").click(function(link){
+                    console.log(link.target.parentElement.getAttribute('data-id'));
+                    localStorage.setItem("srId",link.target.parentElement.getAttribute('data-id'));
+                    window.location = "view.html";
+                });
+            }
+
+            function addSR(){
+                    window.location = "create.html";
+            }
+
         </script>
    </body>
 </html>
