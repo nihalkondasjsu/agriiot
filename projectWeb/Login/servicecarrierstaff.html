@@ -49,6 +49,7 @@
             function submitForm(){
                 $.post("/user/login",getFormData($("#myForm")),function(data){
                     if(data.success){
+                        if(data.user.userRole === 'servicecarrierstaff')
                         window.location = "../User/ServiceCarrierStaff/Dashboard.html";
                     }else{
                         alert("Please try again.");

@@ -32,7 +32,7 @@ module.exports = function(app,collections){
                 // session saved
                 console.log('session saved');
                 console.log(req.session.userId);
-                res.json({success:true});
+                res.json({success:true,user:user});
               });
 
               //res.json({success:false});

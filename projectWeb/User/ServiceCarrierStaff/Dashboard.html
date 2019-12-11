@@ -72,7 +72,7 @@
                       
                       <table style='width:100%;padding:15px;'>
                         <tr valign='middle'>
-                            <td ><h2>Here are your Service Requests</h2></td>
+                            <td ><h2>Service Carrier Staff: Service Requests</h2></td>
                             
                         </tr>
                       </table>
@@ -126,7 +126,7 @@
             }
 
             $.get("/whoami",function(data){
-        console.log(data);
+                console.log(data);
             if(data.user === true){
                 
                 sendMsgToParent({userState:'changed','data':data});

@@ -50,7 +50,8 @@
             function submitForm(){
                 $.post("/user/login",getFormData($("#myForm")),function(data){
                     if(data.success){
-                        window.location = "../User/Farmer/Dashboard.html";
+                        if(data.user.userRole === 'farmer')
+                            window.location = "../User/Farmer/Dashboard.html";
                     }else{
                         alert("Please try again.");
                     }
