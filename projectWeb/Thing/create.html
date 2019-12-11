@@ -81,15 +81,17 @@
                console.log(requestDetails);
                var tableContents = "";
                requestDetails.subscribe.forEach(function(subscription){
-                   tableContents += "<tr>"
-                   +"<td><input class='ORG' placeholder='ORG' value='1j0vu8'></td>"
-                   +"<td><input class='DEVICE_TYPE' placeholder='DEVICE_TYPE' value='Generic'></td>"
-                   +"<td><input class='DEVICE_ID' placeholder='DEVICE_ID'></td>"
-                   +"<td><input class='TOKEN' placeholder='TOKEN' value='Mrox5497' type='password'></td>"
-                   +"<td><input class='thingName' placeholder='Thing Name' value='' ></td>"
-                   +"<td><input class='tmt' readonly value='"+subscription.thingType.thingMainType+"'></td>"
-                   +"<td><input class='tst' readonly value='"+subscription.thingType.thingSubType+"'></td>"
-                   +"</tr>";
+                   for(var i =0;i<subscription.quantity;i++){
+                       tableContents += "<tr>"
+                        +"<td><input class='ORG' placeholder='ORG' value='1j0vu8'></td>"
+                        +"<td><input class='DEVICE_TYPE' placeholder='DEVICE_TYPE' value='Generic'></td>"
+                        +"<td><input class='DEVICE_ID' placeholder='DEVICE_ID'></td>"
+                        +"<td><input class='TOKEN' placeholder='TOKEN' value='Mrox5497' type='password'></td>"
+                        +"<td><input class='thingName' placeholder='Thing Name' value='' ></td>"
+                        +"<td><input class='tmt' readonly value='"+subscription.thingType.thingMainType+"'></td>"
+                        +"<td><input class='tst' readonly value='"+subscription.thingType.thingSubType+"'></td>"
+                        +"</tr>";
+                   }
                });
                tableContents += "";//
                $('#formElements').html(tableContents);

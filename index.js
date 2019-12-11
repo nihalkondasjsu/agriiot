@@ -78,7 +78,6 @@ app.get('/whoami', function (req, res) {
 
 app.use(express.static('projectWeb'))
 
-var sendCommand = {};
 
 http.listen(3000, function() {
   console.log('Example app listening on port '+(process.env.PORT || 3000)+'!');
@@ -106,14 +105,14 @@ http.listen(3000, function() {
         console.log("Device Event from :: "+deviceType+" : "+deviceId+" of event "+eventType+" with payload : "+payload);
 
             console.log("appClientConnected deviceEvent");
-            io.emit(deviceId, JSON.parse(payload)); // This will emit the event to all connected sockets
+            try{
+                if(isNaN(JSON.parse(payload).temperature) === false)
+                io.emit(deviceId, JSON.parse(payload)); // This will emit the event to all connected sockets
+            }catch(e){
 
-            if(sendCommand.value !== undefined){
-                console.log(sendCommand);
-                appClient.publishDeviceCommand("Generic",sendCommand.DEVICE_ID, "blink", "json", {value:sendCommand.value});
-                sendCommand ={};
-                console.log(sendCommand);
             }
+            
+            
 
     });
     
@@ -131,8 +130,7 @@ io.on('connection', function(socket){
 app.post('/thing/command',function(req,res){
     
     
-    sendCommand = req.body;
-
+    
     res.json({success:true});
     
 });

@@ -195,7 +195,7 @@
             });
 
           var prevData = [];
-          var chart = undefined;
+          var chart ;
           
         function presentData(json){
             json.x = json["timestamp"];
@@ -203,6 +203,7 @@
               json.label = new Date(json.x).toTimeString().split(' ')[0];
               
               prevData.push(json);
+              console.log(prevData);
               
               if(prevData.length >= 20){
                   prevData.shift();
@@ -253,6 +254,7 @@
           
           
           function loadGraph(){
+              alert('Please Wait while the Graph gets loaded');
               chart = new CanvasJS.Chart("chartContainer", {
                 title :{
                     text: "Dynamic Data"
