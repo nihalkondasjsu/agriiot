@@ -78,7 +78,7 @@
 
                     thinglist.forEach(function(thing){
                         if(thing.thingType.thingMainType === 'Sensor'){
-                            var preS = presets[thing.thingType.thingSubType];
+                            var preS = JSON.parse(JSON.stringify(presets[thing.thingType.thingSubType]));
                             preS.thingId = thing.thingId;
                             preS.thingName = thing.thingName;
                             preS.thingDeviceId = thing.DEVICE_ID;

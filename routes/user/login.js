@@ -30,6 +30,8 @@ module.exports = function(app,collections){
 
             req.session.save(function(err) {
                 // session saved
+                if(err)
+                console.log(err);
                 console.log('session saved');
                 console.log(req.session.userId);
                 res.json({success:true,user:user});
