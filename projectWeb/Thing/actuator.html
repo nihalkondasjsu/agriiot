@@ -133,24 +133,26 @@
                       <h1 class="heading">Actuator Information</h1>
                         
                       <div style="background-color: rgba(255,255,255,0.4);">
-                      <h2>South Field Water Dispenser</h2>
-                          <table style="text-align: left">
+                      <h2 id='tnm'>North Barn Temperature Sensor</h2>
+                        <table style="text-align: left">
                             <tr>
                                 <th>Thing ID</th>
-                                <td>T5578</td>
+                                <td id='tid'>T5677</td>
                             </tr>
                             <tr>
                                 <th>Thing SubType</th>
-                                <td>Water Dispenser</td>
+                                <td id='tsbty'>Temperature Sensor</td>
                             </tr>
                             <tr>
                                 <th>Thing Status</th>
-                                <td>Active</td>
-                            </tr>  
+                                <td id='tst'>Active</td>
+                            </tr>
+                            <!--
                             <tr>
                                 <th>Thing Location</th>
                                 <td><a href="#">Click Here To View Installed Location</a></td>
-                            </tr>  
+                            </tr>
+                            -->  
                         </table>
                     <table class="thingData" style="width:100%"
                            cellpadding="0"
@@ -180,16 +182,12 @@
         <table class="bottomborder" style="width:100%;">
             <tbody >
             <tr>
-                <th >Gallons To Dispense</th>
-                <td ><input id="gallonsToDispense"></td>
+                <th >Value</th>
+                <td ><input id="value" type='number'> </td>
             </tr>
             <tr>
                 <td colspan="2" align="center"><button id="submit_button">Command Operation</button></td>
             </tr>
-            <tr>
-                <th >Gallons Dispensed</th>
-                <td ><input id="gallonsDispensed" readonly></td>    
-            </tr>    
             </tbody>
         </table>
        
@@ -201,8 +199,7 @@
                             <tr>
                                 <td><b>Thing Id</b></td>
                                 <td><b>Timestamp</b></td>
-                                <td ><b>GallonsToDispense</b></td>
-                                <td ><b>GallonsDispensed</b></td>
+                                <td ><b>Value</b></td>
                             </tr>  
                         </thead>
                         <tbody id="packetList">
@@ -217,7 +214,20 @@
        
        <script src="../js/all.js"></script>
      <script>
-         
+         var prevData =[];
+        var thingId = localStorage.getItem('thingId');
+
+            var thing ;
+            $.get('/thing/read?thingId='+thingId,function(data){
+                if(data.success){
+                    thing = data.data;
+                    $('#tnm').html(thing.thingName);
+                    $('#tid').html(thing.thingId);
+                    $('#tsbty').html(thing.thingType.thingSubType);
+                    $('#tst').html(thing.thingStatus);
+                }
+            });
+
          var OperateHTML = $("#Operate").html();
          $("#Operate").html("");
          
@@ -226,26 +236,22 @@
          
          $("#sectionData").html(OperateHTML);
          
-          var thingId = "T5578";
-          var prevData = [];
           
          var i = 0;
          
          $("#submit_button").click(function(){
              
-             var gallonsDispensed = $("#gallonsToDispense").val() ;
+             var value = $("#value").val() ;
              
-             if((++i)%5 == 0){
-                gallonsDispensed = randomValue(2)==0 ? $("#gallonsToDispense").val() : randomValue($("#gallonsToDispense").val());
-                }
-             $("#gallonsDispensed").val(gallonsDispensed) ;
-             var json = {
+             $.post('/thing/command',{'value':value,'DEVICE_ID':thing.DEVICE_ID},function(data){
+            var json = {
                  "thingId":thingId,
                  "timestamp":new Date().getTime(),
-                "gallonsToDispense":$("#gallonsToDispense").val(),
-                 "gallonsDispensed":gallonsDispensed
+                "value":value
              }
              prevData.push(json);
+             alert("Command Sent Successfully");
+             });
          });
          
           
@@ -263,10 +269,7 @@
                   html += json["timestamp"];  
                   html += "</td>";
                   html += "<td>";
-                  html += json["gallonsToDispense"];  
-                  html += "</td>";
-                  html += "<td>";
-                  html += json["gallonsDispensed"];  
+                  html += json["value"];  
                   html += "</td>";
                   html += "</tr>";
               $("#packetList").prepend(html);

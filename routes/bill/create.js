@@ -18,7 +18,7 @@ module.exports = function(app,collections){
             //payAsYouGo
             //srId
 
-            collections['service_requests'].findOne({requestId:json['srId']},function(err,sreq){
+            collections['service_requests'].findOne({requestId:json['requestId']},function(err,sreq){
                 if(err){
                     res.json({success:false});
                     return;

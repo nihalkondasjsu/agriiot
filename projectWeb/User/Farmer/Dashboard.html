@@ -12,6 +12,7 @@
               height:200px;
               object-fit: cover;
               border-radius: 50%;
+    margin: 10px;
           }
           
           .farmList{
@@ -65,14 +66,32 @@
                <td align="center" valign="middle">
                   <div class="formDiv">
                       <h1 class="heading">Welcome to AgriIot</h1>
-                        <img class="dp" src="https://www.fairchildgarden.org/portals/0/images/Fruit%20Program/expeditions/mikasaki_grower.jpg">
+                        <table >
+                            <tr>
+                                <td rowspan='4'><img class="dp" src=""></td>
+                                <td>Email :</td>
+                                <td id='userEmail'></td>
+                            </tr>
+                            <tr>
+                                <td>Name :</td>
+                                <td id='userName'></td>
+                            </tr>
+                            <tr>
+                                <td>Address :</td>
+                                <td id='userAddress'></td>
+                            </tr>
+                            <tr>
+                                <td>Phone :</td>
+                                <td id='userPhoneNumber'></td>
+                            </tr>
+                        </table>
                       <br>
                       <br>
                       <div style="background-color: rgba(255,255,255,0.4);">
                       
                       <table style='width:100%;padding:15px;'>
                         <tr valign='middle'>
-                            <td ><h2>Here are your Farms</h2></td>
+                            <td ><h2>Farmer : Farms</h2></td>
                             <td align='right'>
                             <img src="https://images.vexels.com/media/users/3/139161/isolated/preview/c76ee72de9a5b980c5f0e0d6b7bac0e0-cross-plus-add-by-vexels.png" style="
                                                                 width: 35px;
@@ -109,6 +128,16 @@
             console.log(data);
             if(data.user === true){
                 
+
+                var keys = ['userEmail','userName','userAddress','userPhoneNumber'];
+
+                keys.forEach(function(key){
+                    console.log(key);
+                    $('#'+key).html(data.userDetails[key])
+                })
+                
+                $('.dp').attr('src',data.userDetails.userDisplayPicture);
+
                 sendMsgToParent({userState:'changed','data':data});
                 
                 $.get("/farm/list",function(data){

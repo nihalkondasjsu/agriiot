@@ -48,11 +48,10 @@
             });
             function submitForm(){
                 $.post("/user/login",getFormData($("#myForm")),function(data){
-                    if(data.success){
-                        if(data.user.userRole === 'machinecontroller')
+                    if(data.success&& data.user.userRole === 'machinecontroller'){
                         window.location = "../User/MachineController/Dashboard.html";
                     }else{
-                        alert("Please try again.");
+                        alert("Invalid Login");
                     }
                 });
             }

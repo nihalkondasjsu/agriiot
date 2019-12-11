@@ -36,11 +36,17 @@
                                 display: block;
                             ">Service Request</h2>
                       <form action="#" method="POST" onsubmit="event.preventDefault(); validateMyForm();">
-                            
+                            <table border='1'>
+                                <tr>
+                                    <th>Request Status</th>
+                                    <td id='requestStatus'></td>
+                                </tr>
+                            </table>
+                            <br>
                             <table id='srDetails' border='1' class='hide'>
                                 
                             </table>
-                            <br><br>
+                            <br>
                             <div id='srBillContract' class="hide">
                                 <table border="1"  >
                                     <tr>
@@ -91,7 +97,7 @@
                             </div>
                             <br><br>
                             <div id='srButtons'></div>
-
+                            
                         </form>
                   </div>
                </td>
@@ -119,6 +125,11 @@
                         'farmer':['Cancel Service Request'],
                         'servicecarrierstaff':['Deny Service Request'],
                         'machinecontroller':['Handle Request','Request Failed']
+                    },
+                    'handled':{
+                        'farmer':['View Things'],
+                        'servicecarrierstaff':['View Things'],
+                        'machinecontroller':['View Things']
                     }
                 };
 
@@ -134,6 +145,7 @@
 
                         if(data.success){
                             serviceRequest = data.data;
+                            $('#requestStatus').html(serviceRequest.requestStatus);
                             if(data.data.requestType === 'subscribe'){
                                 printSubscribeSR(data.data.requestDetails);
                             }
@@ -278,8 +290,36 @@
                         }else{
 
                         }
+                }else if(operation == "View Things"){
+                    showStubs();
+                }else{
+                    $.get('/servicerequest/cancel?srId='+srId,function(data){
+                            if(data.success){
+                                window.location.reload();
+                            }else{
+
+                            }
+                        });
                 }
             }
+
+            function showStubs(){
+              
+              popitup('../ServiceRequest/stubs.html','ServiceRequest Thing Stubs');
+            }
+
+            function popitup(url,windowName) {
+                var w = 850;
+                var h = 600;
+                //alert(screen.width);
+                var left = (screen.width/2)-(w/2);
+                
+                var top = (screen.height/2)-(h/2);
+              var newwindow = window.open(url,windowName,'toolbar=no, location=no, directories=no, status=no, menubar=no, resizable=no, copyhistory=no,height='+h+',width='+w+',top='+top+', left='+left);
+              if (window.focus) {newwindow.focus();}
+              return false;
+            }
+          
 
         </script>
    </body>

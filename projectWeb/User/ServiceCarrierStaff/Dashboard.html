@@ -12,6 +12,7 @@
               height:200px;
               object-fit: cover;
               border-radius: 50%;
+    margin: 10px;
           }
           
           .farmList{
@@ -65,7 +66,25 @@
                <td align="center" valign="middle">
                   <div class="formDiv">
                       <h1 class="heading">Welcome to AgriIot</h1>
-                        <img class="dp" src="https://ukla.org/images/icons/user-icon.svg">
+                      <table >
+                            <tr>
+                                <td rowspan='4'><img class="dp" src=""></td>
+                                <td>Email :</td>
+                                <td id='userEmail'></td>
+                            </tr>
+                            <tr>
+                                <td>Name :</td>
+                                <td id='userName'></td>
+                            </tr>
+                            <tr>
+                                <td>Address :</td>
+                                <td id='userAddress'></td>
+                            </tr>
+                            <tr>
+                                <td>Phone :</td>
+                                <td id='userPhoneNumber'></td>
+                            </tr>
+                        </table>
                       <br>
                       <br>
                       <div style="background-color: rgba(255,255,255,0.4);">
@@ -128,6 +147,14 @@
             $.get("/whoami",function(data){
                 console.log(data);
             if(data.user === true){
+                var keys = ['userEmail','userName','userAddress','userPhoneNumber'];
+
+                keys.forEach(function(key){
+                    console.log(key);
+                    $('#'+key).html(data.userDetails[key])
+                })
+                
+                $('.dp').attr('src',data.userDetails.userDisplayPicture);
                 
                 sendMsgToParent({userState:'changed','data':data});
                 $.get("/servicerequest/list",function(data){

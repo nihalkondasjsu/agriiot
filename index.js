@@ -13,6 +13,19 @@ app.use(express.json());
 
 var collections = {};
 
+var appClient ;
+
+var appClientConfig = {
+    "org" : "1j0vu8",
+    "id" : "SampleAppNk",
+    "domain": "internetofthings.ibmcloud.com",
+    "auth-key" : "a-1j0vu8-zfsmcrmx6c",
+    "auth-token" : "sJJN3tMyMkYsJVFdbh",
+    "type" : "shared" 
+}
+
+//l1nAjDm+Sz?gmHRlO7
+
 require('./db/mongodb')(function(colls){
     collections = (colls);
     require('./routes/user/create')(app,collections);
@@ -24,6 +37,7 @@ require('./db/mongodb')(function(colls){
     require('./routes/servicerequest/create')(app,collections);
     require('./routes/servicerequest/list')(app,collections);
     require('./routes/servicerequest/read')(app,collections);
+    require('./routes/servicerequest/cancel')(app,collections);
     require('./routes/bill/create')(app,collections);
     require('./routes/bill/pay')(app,collections);
     require('./routes/thing/list')(app,collections);
@@ -64,21 +78,15 @@ app.get('/whoami', function (req, res) {
 
 app.use(express.static('projectWeb'))
 
+var sendCommand = {};
+
 http.listen(3000, function() {
   console.log('Example app listening on port '+(process.env.PORT || 3000)+'!');
 
 
     var Client = require("ibmiotf");
-    
-    var appClientConfig = {
-        "org" : "1j0vu8",
-        "id" : "SampleAppNk",
-        "domain": "internetofthings.ibmcloud.com",
-        "auth-key" : "a-1j0vu8-zfsmcrmx6c",
-        "auth-token" : "sJJN3tMyMkYsJVFdbh"
-    }
  
-    var appClient = new Client.IotfApplication(appClientConfig);
+    appClient = new Client.IotfApplication(appClientConfig);
    
     console.log("appClientCreated");
     
@@ -90,7 +98,7 @@ http.listen(3000, function() {
  
         appClient.subscribeToDeviceEvents("Generic","+","+","json");
 
-            console.log("appClientConnected Successfully");
+        console.log("appClientConnected Successfully");
 
     });
     appClient.on("deviceEvent", function (deviceType, deviceId, eventType, format, payload) {
@@ -99,6 +107,13 @@ http.listen(3000, function() {
 
             console.log("appClientConnected deviceEvent");
             io.emit(deviceId, JSON.parse(payload)); // This will emit the event to all connected sockets
+
+            if(sendCommand.value !== undefined){
+                console.log(sendCommand);
+                appClient.publishDeviceCommand("Generic",sendCommand.DEVICE_ID, "blink", "json", {value:sendCommand.value});
+                sendCommand ={};
+                console.log(sendCommand);
+            }
 
     });
     
@@ -113,3 +128,11 @@ io.on('connection', function(socket){
     io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' }); // This will emit the event to all connected sockets
 });
 
+app.post('/thing/command',function(req,res){
+    
+    
+    sendCommand = req.body;
+
+    res.json({success:true});
+    
+});

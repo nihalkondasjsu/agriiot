@@ -5,8 +5,14 @@ module.exports = function(app,collections){
         
         var thinglist = []
 
-        if(req.query.farmId){
-            var cursor = collections["things"].find({thingFarmId:req.query.farmId});
+        if(req.query.farmId || req.query.srId){
+            var search = {};
+            if(req.query.farmId){
+                search['thingFarmId'] = req.query.farmId;
+            }else{
+                search['thingRequestId'] = req.query.srId;
+            }
+            var cursor = collections["things"].find(search);
 
             cursor.each(function(err, item) {
                 if(err){

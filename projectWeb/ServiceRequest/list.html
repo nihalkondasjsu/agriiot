@@ -88,6 +88,7 @@
                                 <th>Farm Id</th>
                                 <th>SR Id</th>
                                 <th>SR Type</th>
+                                <th>SR Status</th>
                             </tr>  
                         </thead>
                         <tbody class="farmsList">
@@ -137,7 +138,7 @@
             function loadFarms(data){
                 console.log(data);
                 data['servicerequestlist'].forEach(function(sr){
-                    $(".farmsList").append("<tr data-id='"+sr.requestId+"'><td>"+sr.farmId+"</td><td>"+sr.requestId+"</td><td>"+sr.requestType+"</td></tr>");
+                    $(".farmsList").append("<tr data-id='"+sr.requestId+"'><td>"+sr.farmId+"</td><td>"+sr.requestId+"</td><td>"+sr.requestType+"</td><td>"+sr.requestStatus+"</td></tr>");
                 });
                 $(".farmsList tr").click(function(link){
                     console.log(link.target.parentElement.getAttribute('data-id'));

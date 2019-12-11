@@ -18,10 +18,20 @@ module.exports = function(app,collections){
             //json['farmOwners'] = [user.userDetails.userId];
     
             json['requestId'] = uuidv4();
-    
-            collections['service_requests'].save(json);
             
-            res.json({success:true});
+            collections['contracts'].findOne({farmId:json['farmId']},function(err,contract){
+                if(err){
+
+                }
+                if(contract){
+                    json['contractId'] = contract.contractId;    
+                }
+
+                collections['service_requests'].save(json);
+                
+                res.json({success:true});
+            });
+
         });
         
     });
