@@ -11,7 +11,7 @@
   "dependencies": {
     "brackets-nodejs-integration": "^1.8.19",
     "crypto": "^1.0.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.0",
     "ibmiotf": "^0.2.41",
     "mongodb": "^3.3.5",
